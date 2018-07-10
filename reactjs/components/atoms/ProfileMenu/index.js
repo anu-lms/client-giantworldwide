@@ -5,26 +5,39 @@ import { Link } from '../../../routes';
 import VerticalArrow from '../Icons/VerticalArrow';
 
 class ProfileMenu extends React.Component {
-  constructor(props, context) {
-    super(props, context);
+  constructor(props) {
+    super(props);
 
     this.state = {
       isOrgsListCollapsed: true,
     };
     this.toggleOrganizationsList = this.toggleOrganizationsList.bind(this);
+    this.collapseOrganizationsList = this.collapseOrganizationsList.bind(this);
+    this.handleOrganizationClick = this.handleOrganizationClick.bind(this);
   }
 
   toggleOrganizationsList() {
+    this.setState(previousState => ({
+      ...previousState,
+      isOrgsListCollapsed: !previousState.isOrgsListCollapsed,
+    }));
+  }
+
+  collapseOrganizationsList() {
     this.setState({
-      isOrgsListCollapsed: !this.state.isOrgsListCollapsed,
+      isOrgsListCollapsed: true,
     });
   }
 
+  handleOrganizationClick(organizationId) {
+    const { onItemClick, onOrganizationChange } = this.props;
+    this.collapseOrganizationsList();
+    onItemClick();
+    onOrganizationChange(organizationId);
+  }
+
   render() {
-    const {
-      username, organizations, activeOrganization,
-      onLogoutClick, setOrganization,
-    } = this.props;
+    const { username, organizations, activeOrganization, onItemClick, onLogoutClick } = this.props;
     const { isOrgsListCollapsed } = this.state;
     return (
       <div className="profile-menu-list">
@@ -47,8 +60,8 @@ class ProfileMenu extends React.Component {
                   <li // eslint-disable-line jsx-a11y/no-noninteractive-element-interactions
                     className={classNames({ 'active': activeOrganization === item.id })}
                     key={item.id}
-                    onClick={() => { setOrganization(item.id); }}
-                    onKeyPress={() => { setOrganization(item.id); }}
+                    onClick={() => { this.handleOrganizationClick(item.id); }}
+                    onKeyPress={() => { this.handleOrganizationClick(item.id); }}
                   >
                     <span>{item.name}</span>
                   </li>
@@ -57,10 +70,10 @@ class ProfileMenu extends React.Component {
             </li>
           }
           <li className="list-separator" />
-          <li className="edit-profile">
+          <li className="edit-profile" onClick={onItemClick} onKeyPress={onItemClick}> {/* eslint-disable-line jsx-a11y/no-noninteractive-element-interactions */}
             <Link to="/user/edit"><a>Edit Profile</a></Link>
           </li>
-          <li className="edit-password">
+          <li className="edit-password" onClick={onItemClick} onKeyPress={onItemClick}> {/* eslint-disable-line jsx-a11y/no-noninteractive-element-interactions */}
             <Link to="/user/password"><a>Edit Password</a></Link>
           </li>
           <li className="list-separator" />
@@ -77,16 +90,18 @@ ProfileMenu.propTypes = {
   username: PropTypes.string,
   organizations: PropTypes.arrayOf(PropTypes.object),
   activeOrganization: PropTypes.number,
+  onItemClick: PropTypes.func,
+  onOrganizationChange: PropTypes.func,
   onLogoutClick: PropTypes.func,
-  setOrganization: PropTypes.func,
 };
 
 ProfileMenu.defaultProps = {
   username: '',
   organizations: [],
   activeOrganization: null,
+  onItemClick: () => {},
+  onOrganizationChange: () => {},
   onLogoutClick: () => {},
-  setOrganization: () => {},
 };
 
 export default ProfileMenu;
