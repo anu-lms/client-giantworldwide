@@ -20,7 +20,7 @@ const LoginPageTemplate = () => (
       <div className="row content">
         <div className="col col-12 col-lg-6">
           <h1 className="heading">
-            Connect, develop, and grow your teams
+            Become a Leader Worth Following
           </h1>
         </div>
 
