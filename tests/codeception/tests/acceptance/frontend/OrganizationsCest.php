@@ -119,4 +119,13 @@ class OrganizationsCest {
     //$I->waitForText('Login');
   }
 
+  /**
+   * @param \Step\Acceptance\Learner $I
+   * @throws \Exception
+   */
+  public function OrganizationLogo(\Step\Acceptance\Learner $I) {
+    $I->loginAsLearner();
+    $I->seeElement('.gww-logo');
+  }
+
 }
